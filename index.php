@@ -19,7 +19,7 @@
         </div>
 
         <div class="form-item">
-            <label for="countx">Количество переменных</label>
+            <label for="countx">Размерность задачи</label>
             <input type="number" name="countx" min='1' required>
         </div>
         
@@ -59,7 +59,12 @@
 
             <div class="form-item">
                 <label for="eps">Точность</label>
-                <input type="number" name="eps" min='0.00001' value='0.01'>
+                <input type="number" name="eps" min='0.000001' value='0.01'>
+            </div>
+
+            <div class="form-item">
+                <label for="fileName">Имя файла отчета</label>
+                <input type="text" name="fileName">
             </div>
         </div>
 
