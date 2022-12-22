@@ -75,7 +75,9 @@ function connectDB() {
 // Проверка роутера на валидность
 function isValidRouter($router) {
     return in_array($router, array(
-        'result'
+        'result',
+        'savetask',
+        'gettask'
     ));
 }
 

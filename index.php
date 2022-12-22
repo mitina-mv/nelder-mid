@@ -7,9 +7,16 @@
     <title>Метод Нелдера-Мида</title>
     <script src="/admin/assets/js/script.js"></script>
     <script src="/script.js"></script>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
+    <form action="" method="post" id='taskAction'>
+        <input type="file" name="addTask">
+        <button id='saveTask'>Сохранить задачу</button>
+        <button id='addTask'>Загрузить задачу</button>
+    </form>
+
     <form action="" id='nelderMid' method='get'>
         <h3>Метод Нелдера-Мида</h3>
 
@@ -71,5 +78,29 @@
         <button type="submit" id='submitForm'>Рассчитать</button>
         <button type="reset">Сбросить</button>
     </form>
+
+    <h4>Отчеты</h4>
+    <div id="docs">
+        <?
+            $files1 = scandir($_SERVER['DOCUMENT_ROOT'] . "/upload/reports/");
+            unset($files1[0]);
+            unset($files1[1]);
+            foreach($files1 as $file) {
+                echo "<a href='/upload/reports/$file' download>$file</a>";
+            }
+        ?>
+    </div>
+
+    <h4>Сохраненные задачи</h4>
+    <div id="tasks">
+        <?
+            $files2 = scandir($_SERVER['DOCUMENT_ROOT'] . "/upload/tasks/");
+            unset($files2[0]);
+            unset($files2[1]);
+            foreach($files2 as $file) {
+                echo "<a href='/upload/tasks/$file' download>$file</a>";
+            }
+        ?>
+    </div>
 </body>
 </html>

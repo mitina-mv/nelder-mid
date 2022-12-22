@@ -116,7 +116,7 @@ function getResult($fData) {
             // шаг 5.1  - расчет xe
             $xe = [];
 
-            $text .= 'fr < fl ('.$fr ." < ".$fResult[$indexMin].')   =>   поиск xe';
+            $text .= '<br/>fr < fl ('.$fr ." < ".$fResult[$indexMin].')   =>   поиск xe';
 
             foreach($xr as $key => $coord) {
                 $xe[$key] = round(($fData['gamma'] * $coord) - ((1 - $fData['gamma']) * $xc[$key]),$round);
@@ -174,6 +174,7 @@ function getResult($fData) {
 
                     $simplex[$i] = $xi;
                 }
+                $iteration--;
                 continue;
             }
         }
@@ -206,7 +207,10 @@ function getResult($fData) {
     $fileName = $fData['fileName'] ?: uniqid();
     $mpdf->Output($_SERVER['DOCUMENT_ROOT'] . "/upload/reports/".$fileName.".pdf", \Mpdf\Output\Destination::FILE);
     
-
+    return [
+        'file' => "/upload/reports/".$fileName.".pdf",
+        'name' => $fileName.".pdf"
+    ];
 }
 
 function expression($vector, $formula) {

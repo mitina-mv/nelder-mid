@@ -1,0 +1,19 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    background-color: var(--main-bg);
+    max-height: 100vh;
+    font-family: 'Nunito Sans';
+}
+
+body * {
+    box-sizing: border-box;
+}
+
+#docs, #tasks {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 3px;
+}
