@@ -9,7 +9,6 @@
     <script src="/script.js"></script>
 </head>
 
-<?echo sin(3); echo eval('return sin(3);');?>
 <body>
     <form action="" id='nelderMid' method='get'>
         <h3>Метод Нелдера-Мида</h3>
@@ -59,8 +58,8 @@
             </div>
 
             <div class="form-item">
-                <label for="epx">Точность</label>
-                <input type="number" name="epx" min='0.00001' value='0.01'>
+                <label for="eps">Точность</label>
+                <input type="number" name="eps" min='0.00001' value='0.01'>
             </div>
         </div>
 

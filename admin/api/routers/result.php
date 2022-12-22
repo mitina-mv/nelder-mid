@@ -36,11 +36,10 @@ function getResult($fData) {
         }
     }
 
-    print_r($simplex);
-
     $flag = true;
     $iteration = 0;
     $maxIteration = 1000;
+    // $maxIteration = 3;
 
     while($flag && $iteration < $maxIteration) {
         $iteration++;
@@ -49,15 +48,10 @@ function getResult($fData) {
         $fResult = [];
 
         foreach($simplex as $key => $t) {
-            try {
-                $compiler = new FormulaInterpreter\Compiler();
-                $executable = $compiler->compile($fData['func']);
-                $result = $executable->run($t);
-            } catch (\Exception $e) {
-                echo $e->getMessage(), "\n";
-            }
-            $fResult[] = $result;
+            $fResult[] = expression($t, $funcFormat);
         }
+
+        print_r($fResult);
 
         // переопредление точек
         $indexMin = array_keys($fResult, min($fResult))[0];
@@ -83,7 +77,7 @@ function getResult($fData) {
             }
         }
         // расчет значения fc
-        $fc = $executable->run($xc);
+        $fc = expression($xc, $funcFormat);
 
         // шаг 4 - поиск пробной точки xr
         $xr = [];
@@ -91,7 +85,7 @@ function getResult($fData) {
         foreach($xc as $key => $coord) {
             $xr[$key] = (1 + $fData['alpha']) * $coord - $fData['alpha'] * $xh[$key];
         }
-        $fr = $executable->run($xr);
+        $fr = expression($xr, $funcFormat);
 
         // шаг 5  -  сравнение fr и fl
         $tmpfResult = $fResult;
@@ -105,7 +99,7 @@ function getResult($fData) {
             foreach($xr as $key => $coord) {
                 $xe[$key] = ($fData['gamma'] * $coord) - ((1 - $fData['gamma']) * $xc[$key]);
             }
-            $fe = $executable->run($xe);
+            $fe = expression($xe, $funcFormat);
 
             if($fe < $fr) {
                 $simplex[$indexMax] = $xe;
@@ -113,7 +107,7 @@ function getResult($fData) {
                 $simplex[$indexMax] = $xr;
             }
 
-        } elseif($fr >= $fResult[$indexMin] || $fr <= max($tmpfResult)) {
+        } elseif($fr >= $fResult[$indexMin] && $fr <= max($tmpfResult)) {
             // шаг 5.2  - замена xh на xr
             $simplex[$indexMax] = $xr;
         } else {
@@ -132,7 +126,7 @@ function getResult($fData) {
                 }
             }
             
-            $fs = $executable->run($xs);
+            $fs = expression($xs, $funcFormat);
 
             // шаг 6 - сравнение fs и fr, fh
             if($fs < min($fr, $fResult[$indexMax])) {
@@ -152,26 +146,30 @@ function getResult($fData) {
         }
 
         // проверка критерия останова
-        // print_r($fResult);
-        // print_r($fc);
-        $fx = $executable->run($simplex[$indexMax]);
-        print_r($fx);
-        // $sigma = 0;
-        // foreach($simplex as $i => $xi) {
-        //     $sigma += pow(($fResult[$i] - $fc), 2);
-        //     echo "   ".($fResult[$i] - $fc)."<br>";
-        // }
-        // $sigma = sqrt((1 / ($n+1)) * $sigma);
-        // echo "sigma = ".$sigma."  ";
+        $sigma = 0;
+        foreach($simplex as $i => $xi) {
+            $sigma += pow(($fResult[$i] - ((1 / ($n+1)) * $fc)), 2);
+        }
+        $sigma = sqrt((1 / ($n+1)) * $sigma);
+        echo "sigma = ".$sigma."  ";
 
-        if($fx <= (float)$fData['epx']){
+        if($sigma <= (float)$fData['eps']){
             $flag = false;
         }
 
         echo "iteration " . ($iteration - 1);
         print_r($simplex);
+        
     }
     
     
     
+}
+
+function expression($vector, $formula) {
+    for($i = count($vector); $i > 0; $i--) {
+        $formula = str_replace("x$i", "(".$vector["x$i"].")", $formula);
+    }
+
+    return eval('return '.$formula.';');
 }
