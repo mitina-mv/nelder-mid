@@ -9,7 +9,7 @@
     <script src="/script.js"></script>
 </head>
 
-<?=sin(3)**2?>
+<?echo sin(3); echo eval('return sin(3);');?>
 <body>
     <form action="" id='nelderMid' method='get'>
         <h3>Метод Нелдера-Мида</h3>

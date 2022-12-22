@@ -10,8 +10,7 @@ function route($data) {
 
 function getResult($fData) {
     // замена ^ на ** - корректный возведение в степень
-    // $funcFormat = str_replace("^", "**", $fData['func']);
-    // echo $funcFormat;
+    $funcFormat = str_replace("^", "**", $fData['func']);
 
     // шаг 1  -  расчет симплекса
     $n = $fData['countx'];
@@ -41,10 +40,7 @@ function getResult($fData) {
 
     $flag = true;
     $iteration = 0;
-    // $maxIteration = 1000;
-    $maxIteration = 3;
-
-    
+    $maxIteration = 1000;
 
     while($flag && $iteration < $maxIteration) {
         $iteration++;
@@ -102,7 +98,7 @@ function getResult($fData) {
         unset($tmpFResult[$indexMin]); 
         unset($tmpFResult[$indexMax]); 
 
-        if($fr < $fResult[$indexMin] && $fr != $fResult[$indexMin]) {
+        if($fr < $fResult[$indexMin]) {
             // шаг 5.1  - расчет xe
             $xe = [];
 
@@ -116,8 +112,6 @@ function getResult($fData) {
             } else {
                 $simplex[$indexMax] = $xr;
             }
-
-            print_r($xe);
 
         } elseif($fr >= $fResult[$indexMin] || $fr <= max($tmpfResult)) {
             // шаг 5.2  - замена xh на xr
@@ -158,19 +152,24 @@ function getResult($fData) {
         }
 
         // проверка критерия останова
-        $fsh = (1 / ($n+1)) * array_sum($xc);
-        $sigma = 0;
-        foreach($simplex as $i => $xi) {
-            $sigma += (1 / ($n+1)) * pow((array_sum($xi) - $fsh), 2);
-        }
-        $sigma = sqrt($sigma);
+        // print_r($fResult);
+        // print_r($fc);
+        $fx = $executable->run($simplex[$indexMax]);
+        print_r($fx);
+        // $sigma = 0;
+        // foreach($simplex as $i => $xi) {
+        //     $sigma += pow(($fResult[$i] - $fc), 2);
+        //     echo "   ".($fResult[$i] - $fc)."<br>";
+        // }
+        // $sigma = sqrt((1 / ($n+1)) * $sigma);
+        // echo "sigma = ".$sigma."  ";
 
-        if($sigma <= $fData['epx']){
+        if($fx <= (float)$fData['epx']){
             $flag = false;
         }
 
         echo "iteration " . ($iteration - 1);
-        // print_r($simplex);
+        print_r($simplex);
     }
     
     
