@@ -1,7 +1,7 @@
 
 body {
     margin: 0;
-    padding: 0;
+    padding: 20px;
     display: grid;
     background-color: var(--main-bg);
     max-height: 100vh;
@@ -16,4 +16,47 @@ body * {
     display: grid;
     grid-template-columns: repeat(3, auto);
     gap: 3px;
+}
+.form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.form-item input {
+    border: 1px solid #ccc;
+    padding: 5px 16px;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.addition-settings {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 10px 30px;
+}
+.info {
+    padding: 20px;
+    border: 1px solid #3f71ff;
+    background: #d5e6ff;
+    border-radius: 15px;
+    color: #1b0050;
+}
+
+form#nelderMid {
+    width: 800px;
+    margin: 0 auto;
+    display: grid;
+    gap: 10px;
+}
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 20px;
+}
+
+div#coord-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 260px);
+    gap: 10px;
 }

@@ -25,9 +25,16 @@
             <span>Ввод переменной принимается в форме: xi, где i - число от одного до количества переменных</span> 
         </div>
 
-        <div class="form-item">
-            <label for="countx">Размерность задачи</label>
-            <input type="number" name="countx" min='1' required>
+        <div class="grid-2">
+            <div class="form-item">
+                <label for="countx">Размерность задачи</label>
+                <input type="number" name="countx" min='1' required>
+            </div>
+                    
+            <div class="form-item">
+                <label for="func">Функция</label>
+                <input type="text" name="func" required>
+            </div>
         </div>
         
         <div class="form-item" >
@@ -36,14 +43,8 @@
             <div id='coord-body'></div>
         </div>
 
-        
-        <div class="form-item">
-            <label for="func">Функция</label>
-            <input type="text" name="func" required>
-        </div>
-
-        <div class="addition-settings">
-            <h5>Настройки</h5>
+        <h5>Настройки</h5>
+        <div class="addition-settings">            
             <div class="form-item">
                 <label for="lambda">Множитель лямбда</label>
                 <input type="number" name="lambda" min='1' value='2'>
@@ -75,8 +76,10 @@
             </div>
         </div>
 
-        <button type="submit" id='submitForm'>Рассчитать</button>
-        <button type="reset">Сбросить</button>
+        <div class="btn-group">
+            <button type="submit" id='submitForm'>Рассчитать</button>
+            <button type="reset">Сбросить</button>
+        </div>
     </form>
 
     <h4>Отчеты</h4>
