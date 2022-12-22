@@ -1,0 +1,5 @@
+admin/composer/vendor/
+*.woff
+*.woff2
+*.ttf
+upload/

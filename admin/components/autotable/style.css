@@ -1,0 +1,10 @@
+.main-table {
+    display: grid;
+}
+
+.main-table__th, .main-table__tr {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
