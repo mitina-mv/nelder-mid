@@ -119,7 +119,7 @@ function getResult($fData) {
             $text .= '<br/>fr < fl ('.$fr ." < ".$fResult[$indexMin].')   =>   поиск xe';
 
             foreach($xr as $key => $coord) {
-                $xe[$key] = round(($fData['gamma'] * $coord) - ((1 - $fData['gamma']) * $xc[$key]),$round);
+                $xe[$key] = round(($fData['gamma'] * $coord) + ((1 - $fData['gamma']) * $xc[$key]),$round);
             }
             $fe = round(expression($xe, $funcFormat),$round);
 
