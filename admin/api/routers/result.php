@@ -46,10 +46,17 @@ function getResult($fData) {
     $lastSigma = 0;
     $sigma = 0;
 
+    // создание html
+    $html = '';
+
     // создание pdf
-    $mpdf = new \Mpdf\Mpdf();
-    $mpdf->WriteHTML('<h1 style="text-align: center;">Отчет о расчете методом Нелдера-Мида</h1>');
-    $mpdf->WriteHTML('<span><b>Функция: </b>'.$fData['func'].'</span><br/><span>Начальная точка: ['.implode(', ', $fData['coord']).']</span>');
+    // $mpdf = new \Mpdf\Mpdf();
+    // $mpdf->WriteHTML('<h1 style="text-align: center;">Отчет о расчете методом Нелдера-Мида</h1>');
+    // $mpdf->WriteHTML('<span><b>Функция: </b>'.$fData['func'].'</span><br/><span>Начальная точка: ['.implode(', ', $fData['coord']).']</span>');
+
+    $html = '<h1 style="text-align: center;">Отчет о расчете методом Нелдера-Мида</h1>';
+    $html .= '<span><b>Функция: </b>'.$fData['func'].'</span><br/><span>Начальная точка: ['.implode(', ', $fData['coord']).']</span>';
+    $html .= '<br/>Дельты: b1 = ' . $delta1 . ';     b2 = '. $delta2;
 
     while($flag && $iteration < $maxIteration) {
         $text = '<h4>Итерация '.$iteration.'</h4><b>Симплекс: </b><br/>';
@@ -62,8 +69,7 @@ function getResult($fData) {
         foreach($simplex as $key => $t) {
             $res = $fResult[] = round(expression($t, $funcFormat),$round);
             $text .= "F" . ($key + 1) . "[" . implode(', ', $t) . "]   =   " . $res . "<br/>";
-        }
-        
+        }        
 
         // переопредление точек
         $indexMin = array_keys($fResult, min($fResult))[0];
@@ -88,7 +94,7 @@ function getResult($fData) {
             $xc[$key] = round($coord / $n,$round);
         }
 
-        $text .= '<br/>Переодределяем точки:<br/>xl: [' . implode(', ', $xl) . ']<br/>xh: [' . implode(', ', $xh) . ']';
+        $text .= '<br/>Переопределяем точки:<br/>xl: [' . implode(', ', $xl) . ']<br/>xh: [' . implode(', ', $xh) . ']';
 
         foreach($xg as $keyxi => $xi) {
             $text .= '<br/>xg' . $keyxi . ': [' . implode(', ', $xi) . ']';
@@ -119,7 +125,7 @@ function getResult($fData) {
             $text .= '<br/>fr < fl ('.$fr ." < ".$fResult[$indexMin].')   =>   поиск xe';
 
             foreach($xr as $key => $coord) {
-                $xe[$key] = round(($fData['gamma'] * $coord) + ((1 - $fData['gamma']) * $xc[$key]),$round);
+                $xe[$key] = round(($fData['gamma'] * $coord) - ((1 - $fData['gamma']) * $xc[$key]),$round);
             }
             $fe = round(expression($xe, $funcFormat),$round);
 
@@ -162,19 +168,28 @@ function getResult($fData) {
             // шаг 6 - сравнение fs и fr, fh
             if($fs < min($fr, $fResult[$indexMax])) {
                 $simplex[$indexMax] = $xs;
+                $text .= '<br/>fs < min(fr, fh) - замена xh на xs<br/>';
             } elseif($fs >= $fResult[$indexMax]) {
-                $text .= '<br/>fs >= fh   =>   редукция симплекса<br/>';
-                // шаг 8 - редукция симплекса
-                foreach($simplex as $i => $xi) {
-                    if($i == $indexMin) continue;
-
-                    foreach($xi as $key => $coord) {
-                        $xi[$key] = round($xl[$key] + 0.5 * ($xi[$key] - $xl[$key]),$round);
+                $text .= '<br/>fs >= fh   =>   редукция симплекса<br/> Новый симплекс: <br/>';
+                // шаг 8 - редукция симплекса                
+                foreach($simplex as $i => &$xi) {
+                    if($i == $indexMin) {
+                        $text .= '[' . implode(', ', $xi) . ']<br/>';
+                        // $html .= $text;
+                        continue;
                     }
 
-                    $simplex[$i] = $xi;
+                    foreach($xi as $key => &$coord) {
+                        $coord = round($xl[$key] + 0.5 * ($coord - $xl[$key]),$round);
+                    }
+
+                    // $simplex[$i] = $xi;
+                    $text .= '[' . implode(', ', $simplex[$i]) . ']<br/>';
                 }
-                $iteration--;
+
+                // $iteration--;
+                $html .= $text;
+
                 continue;
             }
         }
@@ -187,29 +202,34 @@ function getResult($fData) {
             $sigma += pow(($fResult[$i] - ((1 / ($n+1)) * $fc)), 2);
         }
         $sigma = sqrt((1 / ($n+1)) * $sigma);
+        // echo (int)$sigma . '<br/>';
 
-        if($sigma <= (float)$fData['eps'] || $lastSigma == $sigma){
+        if($sigma <= (float)$fData['eps'] || $lastSigma == $sigma || $sigma == INF){
             $flag = false;
             $min = $simplex[$indexMax];
         }
 
         $text .= '<br/><b>Проверка критерия останова:</b> sigma = ' . $sigma . " <= " . $fData['eps'].' - ' . ($flag ? 'неверно ' : 'верно, конец расчета');
 
-        $mpdf->WriteHTML($text);
+        // $mpdf->WriteHTML($text);
+        $html .= $text;
         
     }
 
     $text = $min ? '<b style="color: #4caf50">' . implode(', ', $min) . "</b>" : '<b style="color: #f00"> НЕ НАЙДЕНА </b>';
     $funcVal = $min ? round(expression($min, $funcFormat),$round) : '--';
 
-    $mpdf->WriteHTML('-----------------------------<br><b>Конец расчета</b><br/>Найденная точка: '. $text . '<br/>Значение функции: ' . $funcVal);
+    // $mpdf->WriteHTML('-----------------------------<br><b>Конец расчета</b><br/>Найденная точка: '. $text . '<br/>Значение функции: ' . $funcVal);
 
-    $fileName = $fData['fileName'] ?: uniqid();
-    $mpdf->Output($_SERVER['DOCUMENT_ROOT'] . "/upload/reports/".$fileName.".pdf", \Mpdf\Output\Destination::FILE);
+    $html .= '-----------------------------<br><b>Конец расчета</b><br/>Найденная точка: '. $text . '<br/>Значение функции: ' . $funcVal;
+
+    // $fileName = $fData['fileName'] ?: uniqid();
+    // $mpdf->Output($_SERVER['DOCUMENT_ROOT'] . "/upload/reports/".$fileName.".pdf", \Mpdf\Output\Destination::FILE);
     
     return [
-        'file' => "/upload/reports/".$fileName.".pdf",
-        'name' => $fileName.".pdf"
+        // 'file' => "/upload/reports/".$fileName.".pdf",
+        // 'name' => $fileName.".pdf",
+        'html' => $html
     ];
 }
 

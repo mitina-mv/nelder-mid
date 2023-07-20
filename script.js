@@ -31,13 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         postData('/admin/api/result', fData, {})
             .then((data) => {
-                let file = getElement('a', ['file'], {
-                    href: data.file,
-                    download: data.name,
-                    textContent: data.name
-                });
-
-                docsBlock.append(file)
+                docsBlock.innerHTML = data.html
             })
             .catch((error) => {
                 showUserMessage('Ошибка', error.message, 'error');
@@ -87,7 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 let file = getElement('a', ['file'], {
                     href: data.file,
                     download: data.name,
-                    textContent: 'Скачать задачу' + data.name
+                    textContent: data.name
                 });
 
                 taskBlock.append(file);
@@ -95,5 +89,19 @@ window.addEventListener('DOMContentLoaded', () => {
             .catch((error) => {
                 showUserMessage('Ошибка', error.message, 'error');
             })
+    })
+
+    let savetaskBlock = document.querySelector("section.savetask");
+    let openSaveTaskBtn = document.querySelector('.btn-open-task');
+
+    openSaveTaskBtn.addEventListener('click', function() {
+        savetaskBlock.classList.toggle('open');
+    })
+
+    let settingskBlock = document.querySelector(".settings");
+    let opensettingsBtn = document.querySelector('.btn-settings');
+
+    opensettingsBtn.addEventListener('click', function() {
+        settingskBlock.classList.toggle('open');
     })
 })

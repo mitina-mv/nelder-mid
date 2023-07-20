@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/composer/vendor/autoload.php');
+// require_once($_SERVER['DOCUMENT_ROOT'] . '/admin/composer/vendor/autoload.php');
 require_once('const.php');
 
 $config = [

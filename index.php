@@ -20,8 +20,39 @@
     <form action="" id='nelderMid' method='get'>
         <h3>Метод Нелдера-Мида</h3>
 
+        <button class='btn btn-settings'> Настройки</button>
+        <section class='settings'>
+            <h5>Настройки</h5>
+            <div class="addition-settings">            
+                <div class="form-item">
+                    <label for="lambda">Множитель лямбда</label>
+                    <input type="number" name="lambda" min='1' value='2'>
+                </div>
+
+                <div class="form-item">
+                    <label for="alpha">Коэффициент отражения (альфа)</label>
+                    <input type="number" name="alpha" min='1' value='2'>
+                </div>
+
+                <div class="form-item">
+                    <label for="betta">Коэффициент сжатия (бетта)</label>
+                    <input type="number" name="betta" min='0.01' value='0.5'>
+                </div>
+
+                <div class="form-item">
+                    <label for="gamma">Коэффициент растяжения (гамма)</label>
+                    <input type="number" name="gamma" min='1' value='2'>
+                </div>
+
+                <div class="form-item">
+                    <label for="eps">Точность</label>
+                    <input type="number" name="eps" min='0.000001' value='0.01'>
+                </div>
+            </div>
+        </section>
+
         <div class="info">
-            <span>Введодите умножение и деление как * и / соответственно.</span> 
+            <span>Вводите умножение и деление как * и / соответственно. Возведение в степень как ^.</span> 
             <span>Ввод переменной принимается в форме: xi, где i - число от одного до количества переменных</span> 
         </div>
 
@@ -43,47 +74,14 @@
             <div id='coord-body'></div>
         </div>
 
-        <h5>Настройки</h5>
-        <div class="addition-settings">            
-            <div class="form-item">
-                <label for="lambda">Множитель лямбда</label>
-                <input type="number" name="lambda" min='1' value='2'>
-            </div>
-
-            <div class="form-item">
-                <label for="alpha">Коэффициент отражения (альфа)</label>
-                <input type="number" name="alpha" min='1' value='2'>
-            </div>
-
-            <div class="form-item">
-                <label for="betta">Коэффициент сжатия (бетта)</label>
-                <input type="number" name="betta" min='0.01' value='0.5'>
-            </div>
-
-            <div class="form-item">
-                <label for="gamma">Коэффициент растяжения (гамма)</label>
-                <input type="number" name="gamma" min='1' value='2'>
-            </div>
-
-            <div class="form-item">
-                <label for="eps">Точность</label>
-                <input type="number" name="eps" min='0.000001' value='0.01'>
-            </div>
-
-            <div class="form-item">
-                <label for="fileName">Имя файла отчета</label>
-                <input type="text" name="fileName">
-            </div>
-        </div>
-
         <div class="btn-group">
             <button type="submit" id='submitForm'>Рассчитать</button>
             <button type="reset">Сбросить</button>
         </div>
     </form>
 
-    <h4>Отчеты</h4>
-    <div id="docs">
+    <h3>Отчет</h3>
+    <div>
         <?
             $files1 = scandir($_SERVER['DOCUMENT_ROOT'] . "/upload/reports/");
             unset($files1[0]);
@@ -92,18 +90,26 @@
                 echo "<a href='/upload/reports/$file' download>$file</a>";
             }
         ?>
+
+        <div contenteditable="true" id="docs">
+            <h5>Ghbf</h5>
+        </div>
     </div>
 
-    <h4>Сохраненные задачи</h4>
-    <div id="tasks">
-        <?
-            $files2 = scandir($_SERVER['DOCUMENT_ROOT'] . "/upload/tasks/");
-            unset($files2[0]);
-            unset($files2[1]);
-            foreach($files2 as $file) {
-                echo "<a href='/upload/tasks/$file' download>$file</a>";
-            }
-        ?>
-    </div>
+    <button class='btn btn-open-task'>Задачи</button>
+    <section class='savetask'>
+        <h4>Сохраненные задачи</h4>
+        <div id="tasks">
+            <?
+                $files2 = scandir($_SERVER['DOCUMENT_ROOT'] . "/upload/tasks/");
+                unset($files2[0]);
+                unset($files2[1]);
+                foreach($files2 as $file) {
+                    echo "<a href='/upload/tasks/$file' download>$file</a>";
+                }
+            ?>
+        </div>
+    </section>
+
 </body>
 </html>
